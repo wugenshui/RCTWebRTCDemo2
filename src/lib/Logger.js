@@ -26,16 +26,16 @@ export default class Logger
 
 	get debug()
 	{
-		return this._debug;
+		return console.debug;
 	}
 
 	get warn()
 	{
-		return this._warn;
+		return console.warn;
 	}
 
 	get error()
 	{
-		return this._error;
+		return console.error;
 	}
 }
