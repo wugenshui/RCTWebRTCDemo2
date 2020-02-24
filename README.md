@@ -46,3 +46,9 @@ const url = 'https://a4cd7858.ngrok.io/';
 
 # Note 
 - Whenever you change the ngrok link you must follow the same routine. 
+
+# Other
+安卓端输出日志
+react-native log-android
+
+nodejs版本：v12.10.0

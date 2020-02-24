@@ -8,16 +8,15 @@ import RoomClient from "./lib/RoomClient"
 import { getDeviceInfo } from "mediasoup-client"
 import reducers from "./lib/redux/reducers"
 import thunk from "redux-thunk"
-// import {
-//   RTCPeerConnection,
-//   RTCIceCandidate,
-//   RTCSessionDescription,
-//   RTCView,
-//   MediaStream,
-//   MediaStreamTrack,
-//   mediaDevices,
-//   registerGlobals
-// } from 'react-native-webrtc';
+import {
+  RTCPeerConnection,
+  RTCIceCandidate,
+  RTCSessionDescription,
+  RTCView,
+  MediaStream,
+  MediaStreamTrack,
+  mediaDevices
+} from "react-native-webrtc"
 
 class App extends Component {
   state = {
@@ -30,8 +29,11 @@ class App extends Component {
   }
   render() {
     const { status, info, streamURL, remoteList } = this.state
-    //console.log('registerGlobals', registerGlobals)
-    //registerGlobals()
+    global.RTCPeerConnection = RTCPeerConnection
+    global.navigator = { mediaDevices }
+    console.log("RTCPeerConnection", RTCPeerConnection)
+    console.log("mediaDevices",mediaDevices, navigator.mediaDevices)
+    console.log("getUserMedia", navigator.mediaDevices.getUserMedia)
     const peerName = "mypeername" + Math.random()
     const roomId = "myroomid"
     const displayName = "chenbo"
