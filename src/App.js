@@ -15,7 +15,7 @@ import {
   RTCView,
   MediaStream,
   MediaStreamTrack,
-  mediaDevices
+  getUserMedia
 } from "react-native-webrtc"
 
 class App extends Component {
@@ -30,10 +30,7 @@ class App extends Component {
   render() {
     const { status, info, streamURL, remoteList } = this.state
     global.RTCPeerConnection = RTCPeerConnection
-    global.navigator = { mediaDevices }
-    console.log("RTCPeerConnection", RTCPeerConnection)
-    console.log("mediaDevices",mediaDevices, navigator.mediaDevices)
-    console.log("getUserMedia", navigator.mediaDevices.getUserMedia)
+    global.navigator = { mediaDevices: { getUserMedia } }
     const peerName = "mypeername" + Math.random()
     const roomId = "myroomid"
     const displayName = "chenbo"
