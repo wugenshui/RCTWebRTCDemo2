@@ -16,7 +16,8 @@ import {
   RTCView,
   MediaStream,
   MediaStreamTrack,
-  getUserMedia
+  mediaDevices,
+  registerGlobals
 } from "react-native-webrtc"
 import { getProtooUrl } from "./lib/urlFactory"
 
@@ -28,13 +29,18 @@ class App extends Component {
     console.info("")
     console.info("")
     console.info("----------------APP初始化--------------")
-    global.RTCPeerConnection = RTCPeerConnection
-    global.RTCIceCandidate = RTCIceCandidate
-    global.RTCSessionDescription = RTCSessionDescription
-    global.MediaStream = MediaStream
-    global.MediaStreamTrack = MediaStreamTrack
-    global.RTCView = RTCView
-    global.navigator = { mediaDevices: { getUserMedia }, product: "ReactNative" }
+    // webrtc api
+    registerGlobals()
+
+    // global.RTCPeerConnection = RTCPeerConnection
+    // global.RTCIceCandidate = RTCIceCandidate
+    // global.RTCSessionDescription = RTCSessionDescription
+    // global.MediaStream = MediaStream
+    // global.MediaStreamTrack = MediaStreamTrack
+    // global.RTCView = RTCView
+    // global.navigator.mediaDevices = mediaDevices
+    // project
+    global.navigator.product = "ReactNative"
     global.myapp = this
     const peerName = "mypeername" + Math.random()
     const roomId = "myroomid"
@@ -83,9 +89,8 @@ class App extends Component {
     console.log("在初始化RoomClient之前", roomId, peerName, displayName, device, useSimulcast, forceTcp, spy, forceH264)
     var roomClient = new RoomClient({ roomId, peerName, displayName, device, useSimulcast, forceTcp, spy, forceH264 })
     //console.log("在初始化RoomClient之后", roomClient)
-
     // NOTE: For debugging.
-    global.CLIENT = roomClient
+    //global.CLIENT = roomClient
   }
   state = {
     info: "初始化",
@@ -108,7 +113,7 @@ class App extends Component {
 
 const styles = StyleSheet.create({
   box: {
-    width: '100%',
+    width: "100%",
     height: 400,
     backgroundColor: "lightgray"
   }

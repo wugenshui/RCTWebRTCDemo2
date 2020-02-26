@@ -237,10 +237,11 @@ export default class RoomClient {
         })
       })
       .then(stream => {
-        console.log("视频流", stream)
+        console.log("媒体流changeWebcam", stream)
+        console.log("媒体流", stream)
         const track = stream.getVideoTracks()[0]
-        console.log("视频track", stream)
-        track.streamReactTag = stream.reactTag
+        console.log("媒体track", stream)
+        track.streamReactTag = stream
         return this._webcamProducer.replaceTrack(track).then(newTrack => {
           track.stop()
 
@@ -300,8 +301,9 @@ export default class RoomClient {
         })
       })
       .then(stream => {
+        console.log("媒体流changeWebcamResolution", stream)
         const track = stream.getVideoTracks()[0]
-        track.streamReactTag = stream.reactTag
+        track.streamReactTag = stream
         return this._webcamProducer.replaceTrack(track).then(newTrack => {
           track.stop()
 
@@ -592,9 +594,10 @@ export default class RoomClient {
         // Super hack!
 
         return navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+          console.log("音频流_room_join", stream)
           const audioTrack = stream.getAudioTracks()[0]
           audioTrack.enabled = false
-          audioTrack.streamReactTag = stream.reactTag
+          audioTrack.streamReactTag = stream
           //setTimeout(() => audioTrack.stop(), 120000);
         })
       })
@@ -644,8 +647,8 @@ export default class RoomClient {
             if (!this._room.canSend("video")) return
 
             cookiesManager.setDevices({ webcamEnabled: true })
-            console.log("设备缓存devicesCookie", devicesCookie)
             const devicesCookie = cookiesManager.getDevices()
+            console.log("设备缓存devicesCookie", devicesCookie)
 
             if (!devicesCookie || devicesCookie.webcamEnabled) {
               this.enableWebcam()
@@ -669,7 +672,6 @@ export default class RoomClient {
         const peers = this._room.peers
 
         for (const peer of peers) {
-          console.log("处理peer", peer)
           this._handlePeer(peer, { notify: false })
         }
       })
@@ -705,15 +707,17 @@ export default class RoomClient {
         return navigator.mediaDevices.getUserMedia({ audio: true })
       })
       .then(stream => {
-        myapp.setState({ info: stream.reactTag })
+        console.log("音频流_setMicProducer", stream)
+        myapp.setState({ info: stream._reactTag })
         logger.debug("音频流")
         console.info("音频流", stream)
         const track = stream.getAudioTracks()[0]
-        track.streamReactTag = stream.reactTag
+        track.streamReactTag = stream
         console.info("音频track", track)
         producer = this._room.createProducer(track, null, { source: "mic" })
 
         // No need to keep original track.
+
         track.stop()
 
         // Send it.
@@ -805,10 +809,11 @@ export default class RoomClient {
         })
       })
       .then(stream => {
-        console.log("媒体流", stream)
+        console.log("媒体流_setWebcamProducer", stream)
         const track = stream.getVideoTracks()[0]
-        track.streamReactTag = stream.reactTag
+        track.streamReactTag = stream
         myapp.setState({ videoURL: stream.toURL() })
+        console.log("媒体流_setWebcamProducer地址", stream.toURL())
         producer = this._room.createProducer(track, { simulcast: this._useSimulcast }, { source: "webcam" })
 
         // No need to keep original track.
