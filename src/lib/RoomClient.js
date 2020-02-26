@@ -724,8 +724,9 @@ export default class RoomClient {
 
         // No need to keep original track.
 
+        console.log("开始track.stop()", track, track.stop)
         track.stop()
-
+        console.log("结束track.stop()")
         // Send it.
         return producer.send(this._sendTransport)
       })
