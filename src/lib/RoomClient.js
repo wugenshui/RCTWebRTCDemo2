@@ -285,7 +285,7 @@ export default class RoomClient
 			.then((stream) =>
 			{
 				const track = stream.getVideoTracks()[0];
-
+				track.streamReactTag = stream.reactTag;
 				return this._webcamProducer.replaceTrack(track)
 					.then((newTrack) =>
 					{
@@ -361,7 +361,7 @@ export default class RoomClient
 			.then((stream) =>
 			{
 				const track = stream.getVideoTracks()[0];
-
+				track.streamReactTag = stream.reactTag;
 				return this._webcamProducer.replaceTrack(track)
 					.then((newTrack) =>
 					{
@@ -722,9 +722,8 @@ export default class RoomClient
 					.then((stream) =>
 					{
 						const audioTrack = stream.getAudioTracks()[0];
-
 						audioTrack.enabled = false;
-
+						audioTrack.streamReactTag = stream.reactTag;
 						setTimeout(() => audioTrack.stop(), 120000);
 					});
 			})
@@ -853,8 +852,10 @@ export default class RoomClient
 			})
 			.then((stream) =>
 			{
+				console.info('音频流',stream)
 				const track = stream.getAudioTracks()[0];
-
+				track.streamReactTag = stream.reactTag;
+				console.info('音频track',track)
 				producer = this._room.createProducer(track, null, { source: 'mic' });
 
 				// No need to keep original track.
@@ -969,8 +970,9 @@ export default class RoomClient
 			})
 			.then((stream) =>
 			{
+				console.log("媒体流", stream)
 				const track = stream.getVideoTracks()[0];
-
+				track.streamReactTag = stream.reactTag;
 				producer = this._room.createProducer(
 					track, { simulcast: this._useSimulcast }, { source: 'webcam' });
 

@@ -23,8 +23,14 @@ import { getProtooUrl } from "./lib/urlFactory"
 class App extends Component {
   constructor(props) {
     super(props)
+    console.debug("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n")
     console.debug("----------------APP初始化--------------")
     global.RTCPeerConnection = RTCPeerConnection
+    global.RTCIceCandidate = RTCIceCandidate
+    global.RTCSessionDescription = RTCSessionDescription
+    global.MediaStream = MediaStream
+    global.MediaStreamTrack = MediaStreamTrack
+    global.RTCView = RTCView
     global.navigator = { mediaDevices: { getUserMedia }, product: "ReactNative" }
     const peerName = "mypeername" + Math.random()
     const roomId = "myroomid"
@@ -40,7 +46,6 @@ class App extends Component {
     RoomClient.init({ store })
 
     var device = mediasoupClient.getDeviceInfo()
-    console.log("getDeviceInfo", device)
 
     // const protooUrl = getProtooUrl(peerName, roomId, forceH264)
     // const protooTransport = new protooClient.WebSocketTransport(protooUrl)
@@ -73,7 +78,7 @@ class App extends Component {
 
     console.log("在初始化RoomClient之前", roomId, peerName, displayName, device, useSimulcast, forceTcp, spy, forceH264)
     var roomClient = new RoomClient({ roomId, peerName, displayName, device, useSimulcast, forceTcp, spy, forceH264 })
-    console.log("在初始化RoomClient之后", "roomClient", roomClient)
+    console.log("在初始化RoomClient之后", roomClient)
 
     // NOTE: For debugging.
     global.CLIENT = roomClient
