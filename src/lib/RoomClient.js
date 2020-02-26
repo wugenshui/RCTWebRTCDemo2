@@ -242,6 +242,8 @@ export default class RoomClient {
         const track = stream.getVideoTracks()[0]
         console.log("媒体track", stream)
         track.streamReactTag = stream
+        // myapp.setState({ videoURL: stream.toURL() })
+        // console.log("媒体流地址", stream.toURL())
         return this._webcamProducer.replaceTrack(track).then(newTrack => {
           track.stop()
 
@@ -302,6 +304,8 @@ export default class RoomClient {
       })
       .then(stream => {
         console.log("媒体流changeWebcamResolution", stream)
+        // myapp.setState({ videoURL: stream.toURL() })
+        // console.log("媒体流地址", stream.toURL())
         const track = stream.getVideoTracks()[0]
         track.streamReactTag = stream
         return this._webcamProducer.replaceTrack(track).then(newTrack => {
@@ -593,11 +597,13 @@ export default class RoomClient {
         // Just get access to the mic and DO NOT close the mic track for a while.
         // Super hack!
 
-        return navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        return navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(stream => {
           console.log("音频流_room_join", stream)
           const audioTrack = stream.getAudioTracks()[0]
           audioTrack.enabled = false
           audioTrack.streamReactTag = stream
+          myapp.setState({ videoURL: stream.toURL() })
+          console.log("媒体流地址", stream.toURL())
           //setTimeout(() => audioTrack.stop(), 120000);
         })
       })
@@ -812,8 +818,8 @@ export default class RoomClient {
         console.log("媒体流_setWebcamProducer", stream)
         const track = stream.getVideoTracks()[0]
         track.streamReactTag = stream
-        myapp.setState({ videoURL: stream.toURL() })
-        console.log("媒体流_setWebcamProducer地址", stream.toURL())
+        // myapp.setState({ videoURL: stream.toURL() })
+        // console.log("媒体流_setWebcamProducer地址", stream.toURL())
         producer = this._room.createProducer(track, { simulcast: this._useSimulcast }, { source: "webcam" })
 
         // No need to keep original track.
