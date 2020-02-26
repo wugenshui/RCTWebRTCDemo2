@@ -340,9 +340,11 @@ export default class RoomClient
 				}
 
 				this._webcam.resolution = newResolution;
+				log.debug('摄像头对象',this._webcam)
 			})
 			.then(() =>
 			{
+				log.debug('摄像头对象',this._webcam)
 				const { device, resolution } = this._webcam;
 
 				logger.debug('changeWebcamResolution() | calling getUserMedia()');
