@@ -237,7 +237,9 @@ export default class RoomClient {
         })
       })
       .then(stream => {
+        console.log("视频流", stream)
         const track = stream.getVideoTracks()[0]
+        console.log("视频track", stream)
         track.streamReactTag = stream.reactTag
         return this._webcamProducer.replaceTrack(track).then(newTrack => {
           track.stop()
@@ -617,6 +619,7 @@ export default class RoomClient {
         if (this._spy) return
 
         // Set our media capabilities.
+        console.log("是否可以发送音频视频：", this._room.canSend("audio"), this._room.canSend("video"))
         store.dispatch(
           stateActions.setMediaCapabilities({
             canSendMic: this._room.canSend("audio"),
@@ -640,9 +643,14 @@ export default class RoomClient {
           .then(() => {
             if (!this._room.canSend("video")) return
 
+            cookiesManager.setDevices({ webcamEnabled: true })
+            console.log("设备缓存devicesCookie", devicesCookie)
             const devicesCookie = cookiesManager.getDevices()
 
-            if (!devicesCookie || devicesCookie.webcamEnabled) this.enableWebcam()
+            if (!devicesCookie || devicesCookie.webcamEnabled) {
+              this.enableWebcam()
+              console.log("设备缓存devicesCookie", devicesCookie)
+            }
           })
       })
       .then(() => {
@@ -661,6 +669,7 @@ export default class RoomClient {
         const peers = this._room.peers
 
         for (const peer of peers) {
+          console.log("处理peer", peer)
           this._handlePeer(peer, { notify: false })
         }
       })
@@ -696,7 +705,7 @@ export default class RoomClient {
         return navigator.mediaDevices.getUserMedia({ audio: true })
       })
       .then(stream => {
-				myapp.setState({ info: stream.reactTag })
+        myapp.setState({ info: stream.reactTag })
         logger.debug("音频流")
         console.info("音频流", stream)
         const track = stream.getAudioTracks()[0]
@@ -798,8 +807,8 @@ export default class RoomClient {
       .then(stream => {
         console.log("媒体流", stream)
         const track = stream.getVideoTracks()[0]
-				track.streamReactTag = stream.reactTag
-				myapp.setState({ videoURL: stream.toURL() })
+        track.streamReactTag = stream.reactTag
+        myapp.setState({ videoURL: stream.toURL() })
         producer = this._room.createProducer(track, { simulcast: this._useSimulcast }, { source: "webcam" })
 
         // No need to keep original track.
