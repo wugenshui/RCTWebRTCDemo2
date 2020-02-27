@@ -229,6 +229,7 @@ export default class RoomClient {
 
         logger.debug("changeWebcam() | calling getUserMedia()")
 
+        console.log("视频流参数", this._webcam.resolution, VIDEO_CONSTRAINS[resolution])
         return navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: { exact: device.deviceId },
@@ -237,11 +238,12 @@ export default class RoomClient {
         })
       })
       .then(stream => {
-        console.log("媒体流changeWebcam", stream)
+        console.log("媒体流_changeWebcam", stream)
         console.log("媒体流", stream)
         const track = stream.getVideoTracks()[0]
         console.log("媒体track", stream)
         track.streamReactTag = stream
+
         // myapp.setState({ videoURL: stream.toURL() })
         // console.log("媒体流地址", stream.toURL())
         return this._webcamProducer.replaceTrack(track).then(newTrack => {
@@ -303,7 +305,7 @@ export default class RoomClient {
         })
       })
       .then(stream => {
-        console.log("媒体流changeWebcamResolution", stream)
+        console.log("媒体流_changeWebcamResolution", stream)
         // myapp.setState({ videoURL: stream.toURL() })
         // console.log("媒体流地址", stream.toURL())
         const track = stream.getVideoTracks()[0]
@@ -597,13 +599,13 @@ export default class RoomClient {
         // Just get access to the mic and DO NOT close the mic track for a while.
         // Super hack!
 
-        return navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(stream => {
+        return navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
           console.log("音频流_room_join", stream)
           const audioTrack = stream.getAudioTracks()[0]
           audioTrack.enabled = false
           audioTrack.streamReactTag = stream
-          myapp.setState({ videoURL: stream.toURL() })
-          console.log("媒体流地址", stream.toURL())
+          // myapp.setState({ videoURL: stream.toURL() })
+          // console.log("媒体流地址", stream.toURL())
           //setTimeout(() => audioTrack.stop(), 120000);
         })
       })
@@ -652,7 +654,6 @@ export default class RoomClient {
           .then(() => {
             if (!this._room.canSend("video")) return
 
-            cookiesManager.setDevices({ webcamEnabled: true })
             const devicesCookie = cookiesManager.getDevices()
             console.log("设备缓存devicesCookie", devicesCookie)
 
@@ -680,6 +681,11 @@ export default class RoomClient {
         for (const peer of peers) {
           this._handlePeer(peer, { notify: false })
         }
+      })
+      .then(() => {
+        console.log("开启摄像头")
+        this.enableWebcam()
+        console.log("已开启摄像头")
       })
       .catch(error => {
         logger.error("_joinRoom() failed:%o", error)
@@ -808,6 +814,13 @@ export default class RoomClient {
 
         logger.debug("_setWebcamProducer() | calling getUserMedia()")
 
+        console.log("视频播放品质", {
+          video: {
+            deviceId: { exact: device.deviceId },
+            ...VIDEO_CONSTRAINS[resolution]
+          }
+        })
+        //resolution = "qvga"
         return navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: { exact: device.deviceId },
@@ -820,7 +833,7 @@ export default class RoomClient {
         const track = stream.getVideoTracks()[0]
         track.streamReactTag = stream
         // myapp.setState({ videoURL: stream.toURL() })
-        // console.log("媒体流_setWebcamProducer地址", stream.toURL())
+        // console.log("媒体流setWebcamProducer地址", stream.toURL())
         producer = this._room.createProducer(track, { simulcast: this._useSimulcast }, { source: "webcam" })
 
         // No need to keep original track.

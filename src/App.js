@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import protooClient from "protoo-client"
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { StyleSheet, Text, TouchableOpacity, TextInput, Button, View } from "react-native"
 import { button, container, rtcView, text } from "./styles"
 import { log, logError } from "./debug"
 
@@ -42,7 +42,7 @@ class App extends Component {
     // project
     global.navigator.product = "ReactNative"
     global.myapp = this
-    const peerName = "mypeername" + Math.random()
+    const peerName = "myphone" + Math.random()
     const roomId = "myroomid"
     const displayName = "Webrtc Demo"
     const useSimulcast = true
