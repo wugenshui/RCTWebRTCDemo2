@@ -40,7 +40,7 @@ class App extends Component {
     // global.RTCView = RTCView
     // global.navigator.mediaDevices = mediaDevices
     // project
-    global.navigator.product = "myphone"
+    global.navigator.product = "ReactNative"
     global.myapp = this
     const peerName = "myphone" + Math.random().toFixed(2)*100
     const roomId = "myroomid"
