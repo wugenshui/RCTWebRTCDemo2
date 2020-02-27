@@ -600,7 +600,7 @@ export default class RoomClient {
         // Super hack!
 
         return navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-          console.log("音频流_room_join", stream)
+          console.log("加入房间_room_join", stream)
           const audioTrack = stream.getAudioTracks()[0]
           audioTrack.enabled = false
           audioTrack.streamReactTag = stream
@@ -820,7 +820,7 @@ export default class RoomClient {
             ...VIDEO_CONSTRAINS[resolution]
           }
         })
-        //resolution = "qvga"
+        
         return navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: { exact: device.deviceId },
