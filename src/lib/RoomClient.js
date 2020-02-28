@@ -161,9 +161,11 @@ export default class RoomClient {
 
     return Promise.resolve()
       .then(() => {
+        console.log("启用摄像头enableWebcam", "_updateWebcams()")
         return this._updateWebcams()
       })
       .then(() => {
+        console.log("启用摄像头enableWebcam", "_setWebcamProducer()")
         return this._setWebcamProducer()
       })
       .then(() => {
@@ -249,7 +251,7 @@ export default class RoomClient {
         // myapp.setState({ videoURL: stream.toURL() })
         // console.log("媒体流地址", stream.toURL())
         return this._webcamProducer.replaceTrack(track).then(newTrack => {
-          track.stop()
+          //track.stop()
 
           return newTrack
         })
@@ -741,7 +743,7 @@ export default class RoomClient {
         // No need to keep original track.
 
         console.log("关闭本地track track.stop()", track, track.stop)
-        track.stop()
+        //track.stop()
         // Send it.
         console.log("准备发送", producer.send)
         var sendresult = producer.send(this._sendTransport)
@@ -824,9 +826,7 @@ export default class RoomClient {
 
         if (!device) throw new Error("no webcam devices")
 
-        logger.debug("_setWebcamProducer() | calling getUserMedia()")
-
-        console.log("视频播放品质", {
+        console.log("视频播放品质_setWebcamProducer() | calling getUserMedia()", {
           video: {
             deviceId: { exact: device.deviceId },
             ...VIDEO_CONSTRAINS[resolution]
@@ -844,12 +844,12 @@ export default class RoomClient {
         console.log("媒体流_setWebcamProducer", stream)
         const track = stream.getVideoTracks()[0]
         track.streamReactTag = stream
-        // myapp.setState({ videoURL: stream.toURL() })
-        // console.log("媒体流setWebcamProducer地址", stream.toURL())
+        myapp.setState({ videoURL: stream.toURL() })
+        console.log("媒体流setWebcamProducer地址", stream.toURL())
         producer = this._room.createProducer(track, { simulcast: this._useSimulcast }, { source: "webcam" })
 
         // No need to keep original track.
-        track.stop()
+        //track.stop()
 
         // Send it.
         return producer.send(this._sendTransport)

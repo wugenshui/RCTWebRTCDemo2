@@ -26,7 +26,7 @@ export default class Logger
 
 	get debug()
 	{
-		return console.debug;
+		return console.info;
 	}
 
 	get warn()
