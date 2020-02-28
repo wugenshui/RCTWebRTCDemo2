@@ -8,7 +8,7 @@ import { applyMiddleware as applyReduxMiddleware, createStore as createReduxStor
 import RoomClient from "./lib/RoomClient"
 import * as mediasoupClient from "mediasoup-client"
 import reducers from "./lib/redux/reducers"
-import * as stateActions from './lib/redux/stateActions';
+import * as stateActions from "./lib/redux/stateActions"
 import thunk from "redux-thunk"
 import {
   RTCPeerConnection,
@@ -87,13 +87,19 @@ class App extends Component {
     //   .catch(error => {
     //     console.error("加入房间失败:%o", error)
     //   })
-    let displayNameSet = false;
+    let displayNameSet = false
     store.dispatch(stateActions.setMe({ peerName, displayName, displayNameSet, device }))
     console.log("初始化参数：", roomId, peerName, displayName, device, useSimulcast, forceTcp, spy, forceH264)
+
     var roomClient = new RoomClient({ roomId, peerName, displayName, device, useSimulcast, forceTcp, spy, forceH264 })
-    //console.log("在初始化RoomClient之后", roomClient)
     // NOTE: For debugging.
     //global.CLIENT = roomClient
+
+    // 获取摄像头的流
+    // navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(stream => {
+    //   myapp.setState({ videoURL: stream.toURL() })
+    //   console.log("媒体流地址", stream.toURL())
+    // })
   }
   state = {
     info: "初始化",

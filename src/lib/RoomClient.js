@@ -204,9 +204,11 @@ export default class RoomClient {
 
     return Promise.resolve()
       .then(() => {
+        console.log("执行this._updateWebcams()")
         return this._updateWebcams()
       })
       .then(() => {
+        console.log("执行完毕this._updateWebcams()")
         const array = Array.from(this._webcams.keys())
         const len = array.length
         const deviceId = this._webcam.device ? this._webcam.device.deviceId : undefined
@@ -216,7 +218,7 @@ export default class RoomClient {
         else idx = 0
 
         this._webcam.device = this._webcams.get(array[idx])
-
+        console.log("选择摄像头设备", this._webcam.device, this._webcam)
         logger.debug("changeWebcam() | new selected webcam [device:%o]", this._webcam.device)
 
         // Reset video resolution to HD.
@@ -606,7 +608,7 @@ export default class RoomClient {
           audioTrack.streamReactTag = stream
           // myapp.setState({ videoURL: stream.toURL() })
           // console.log("媒体流地址", stream.toURL())
-          //setTimeout(() => audioTrack.stop(), 120000);
+          setTimeout(() => audioTrack.stop(), 120)
         })
       })
       .then(() => {
@@ -648,7 +650,9 @@ export default class RoomClient {
           .then(() => {
             if (!this._room.canSend("audio")) return
 
-            this._setMicProducer().catch(() => {})
+            this._setMicProducer().catch(error => {
+              console.error("this._setMicProducer() 异常:", error)
+            })
           })
           // Add our webcam (unless the cookie says no).
           .then(() => {
@@ -683,9 +687,8 @@ export default class RoomClient {
         }
       })
       .then(() => {
-        console.log("开启摄像头")
+        console.log("开启摄像头this.enableWebcam()")
         this.enableWebcam()
-        console.log("已开启摄像头")
       })
       .catch(error => {
         logger.error("_joinRoom() failed:%o", error)
@@ -715,8 +718,15 @@ export default class RoomClient {
     return Promise.resolve()
       .then(() => {
         logger.debug("_setMicProducer() | calling getUserMedia()")
-
+        console.log(
+          "navigator.mediaDevices.getUserMedia({ audio: true })",
+          navigator.mediaDevices.getUserMedia({ audio: true })
+        )
         return navigator.mediaDevices.getUserMedia({ audio: true })
+        // .then(stream => {
+        //   console.log("音频流2_setMicProducer", stream)
+        //   return stream
+        // })
       })
       .then(stream => {
         console.log("音频流_setMicProducer", stream)
@@ -727,18 +737,20 @@ export default class RoomClient {
         track.streamReactTag = stream
         console.info("音频track", track)
         producer = this._room.createProducer(track, null, { source: "mic" })
-
+        console.log("创建producer", producer.send)
         // No need to keep original track.
 
-        console.log("开始track.stop()", track, track.stop)
+        console.log("关闭本地track track.stop()", track, track.stop)
         track.stop()
-        console.log("结束track.stop()")
         // Send it.
-        return producer.send(this._sendTransport)
+        console.log("准备发送", producer.send)
+        var sendresult = producer.send(this._sendTransport)
+        console.log("发送结果", sendresult)
+        return sendresult
       })
       .then(() => {
         this._micProducer = producer
-
+        console.log("设置producer", this._micProducer)
         store.dispatch(
           stateActions.addProducer({
             id: producer.id,
@@ -820,7 +832,7 @@ export default class RoomClient {
             ...VIDEO_CONSTRAINS[resolution]
           }
         })
-        
+
         return navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: { exact: device.deviceId },
@@ -918,23 +930,27 @@ export default class RoomClient {
         return navigator.mediaDevices.enumerateDevices()
       })
       .then(devices => {
+        console.log("设备", devices)
         for (const device of devices) {
           if (device.kind !== "videoinput") continue
-
           this._webcams.set(device.deviceId, device)
         }
       })
       .then(() => {
         const array = Array.from(this._webcams.values())
+        console.log("可选视频设备", array)
         const len = array.length
         const currentWebcamId = this._webcam.device ? this._webcam.device.deviceId : undefined
 
-        logger.debug("_updateWebcams() [webcams:%o]", array)
-
-        if (len === 0) this._webcam.device = null
-        else if (!this._webcams.has(currentWebcamId)) this._webcam.device = array[0]
+        if (len === 0) {
+          this._webcam.device = null
+        } else if (!this._webcams.has(currentWebcamId)) {
+          this._webcam.device = array[0]
+        }
+        console.log("选择视频设备", this._webcam.device)
 
         store.dispatch(stateActions.setCanChangeWebcam(this._webcams.size >= 2))
+        console.log("执行结束_updateWebcams", len, !this._webcams.has(currentWebcamId), this._webcams.size)
       })
   }
 
